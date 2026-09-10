@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendimiento Monitoristas — 01–10/09/2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A1220; --panel: #101B31; --panel-2: #0D1728;
+    --border: #1E2D48; --border-soft: #16233B; --text: #E7EDF7; --text-muted: #8AA0C2; --text-dim: #566A8E;
+    --teal: #2AC9B8; --teal-soft: rgba(42,201,184,0.12); --amber: #F0A93E; --amber-soft: rgba(240,169,62,0.14);
+    --red: #F14C6B; --red-soft: rgba(241,76,107,0.14); --green: #33C077; --green-soft: rgba(51,192,119,0.13);
+    --display: 'Space Grotesk', sans-serif; --body: 'Inter', sans-serif; --mono: 'IBM Plex Mono', monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1100px 500px at 12% -10%, rgba(42,201,184,0.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(240,169,62,0.06), transparent 55%),
+      var(--bg);
+    color: var(--text); font-family: var(--body); line-height: 1.5; padding: 0 0 64px 0;
+  }
+  .masthead{
+    border-bottom: 1px solid var(--border-soft);
+    padding: 28px clamp(18px, 4vw, 56px) 22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; flex-wrap: wrap; position: relative;
+  }
+  .masthead::before{
+    content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    background: linear-gradient(90deg, transparent, var(--teal) 20%, var(--teal) 80%, transparent); opacity:0.55;
+  }
+  .brand-row{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px;
+    background: linear-gradient(135deg, var(--teal), #157A6E);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-weight:600; font-size:13px; color:#04201B;
+  }
+  .eyebrow{ font-family: var(--mono); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color: var(--text-dim); }
+  h1{ font-family: var(--display); font-weight:600; font-size: clamp(22px, 3.2vw, 32px); margin: 2px 0 6px; letter-spacing:-0.01em; }
+  .sub{ color: var(--text-muted); font-size:14px; max-width: 720px; }
+  .status-pill{
+    font-family: var(--mono); font-size:12.5px;
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--panel); border:1px solid var(--border); padding: 9px 14px; border-radius: 999px; color: var(--text-muted);
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; background: var(--teal); box-shadow:0 0 0 3px var(--teal-soft); }
+  .wrap{ padding: 30px clamp(18px, 4vw, 56px) 0; max-width: 1360px; margin:0 auto; }
+  section{ margin-bottom: 36px; }
+  .section-head{ display:flex; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .section-num{ font-family: var(--mono); color: var(--teal); font-size:12.5px; }
+  .section-title{ font-family: var(--display); font-size:18px; font-weight:600; }
+  .section-note{ color: var(--text-dim); font-size:12.5px; margin-left:auto; font-family: var(--mono); }
+
+  .cards{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  @media (max-width: 900px){ .cards{ grid-template-columns:1fr; } }
+  .card{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border); border-radius:14px; padding:20px 22px;
+  }
+  .card .name{ font-family: var(--display); font-size:18px; font-weight:600; margin-bottom:4px; }
+  .card .role{ font-family: var(--mono); font-size:11px; color: var(--text-dim); text-transform:uppercase; letter-spacing:.08em; margin-bottom:16px; }
+  .score-big{ font-family: var(--display); font-size:48px; font-weight:600; line-height:1; }
+  .score-big.good{ color: var(--green); }
+  .score-big.mid{ color: var(--amber); }
+  .score-label{ font-size:12px; color: var(--text-muted); margin-top:4px; margin-bottom:16px; }
+  .metrics{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .metric{ background: var(--panel-2); border:1px solid var(--border-soft); border-radius:10px; padding:10px 12px; }
+  .metric .k{ font-family: var(--mono); font-size:10px; color: var(--text-dim); text-transform:uppercase; letter-spacing:.06em; }
+  .metric .v{ font-family: var(--display); font-size:18px; font-weight:600; margin-top:2px; }
+  .bars{ margin-top:16px; }
+  .bar-row{ margin-bottom:10px; }
+  .bar-lab{ display:flex; justify-content:space-between; font-size:12px; color: var(--text-muted); margin-bottom:4px; font-family: var(--mono); }
+  .bar-track{ height:8px; background: var(--border-soft); border-radius:99px; overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:99px; background: var(--teal); }
+
+  .table-card{ background: var(--panel); border:1px solid var(--border); border-radius:14px; overflow:hidden; overflow-x:auto; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead th{
+    text-align:left; font-family: var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+    color: var(--text-dim); padding:13px 14px; border-bottom:1px solid var(--border); background: var(--panel-2);
+  }
+  tbody td{ padding:11px 14px; border-bottom:1px solid var(--border-soft); vertical-align:top; }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: rgba(255,255,255,0.02); }
+  td.num, th.num{ font-family: var(--mono); text-align:right; }
+  .muted{ color: var(--text-muted); }
+  .badge{
+    display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px;
+    font-family: var(--mono); font-size:11px; white-space:nowrap;
+  }
+  .badge.ok{ background: var(--green-soft); color: var(--green); }
+  .badge.warn{ background: var(--amber-soft); color: var(--amber); }
+  .note-box{
+    background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px;
+    font-size:13.5px; color: var(--text-muted);
+  }
+  .note-box li{ margin-bottom:6px; }
+  footer{
+    max-width:1360px; margin: 36px auto 0; padding: 18px clamp(18px,4vw,56px) 0;
+    border-top:1px solid var(--border-soft); color: var(--text-dim); font-size:12px; font-family: var(--mono);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+</style>
+</head>
+<body>
+<div class="masthead">
+  <div>
+    <div class="brand-row">
+      <div class="brand-mark">CE</div>
+      <span class="eyebrow">Centro de Enlace · Evaluación de desempeño</span>
+    </div>
+    <h1>Rendimiento de monitoristas — 01–10/09/2026</h1>
+    <div class="sub">Comparativo de Kevin Daniel Maldonado e Israel de Jesús Pérez: volumen por turno, cadencia temporal, calidad de estatus y puntualidad de cierres.</div>
+  </div>
+  <div class="status-pill"><span class="dot"></span> 10 noches · 105 registros · 2 monitoristas</div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Índice de desempeño laboral</span>
+      <span class="section-note">Ponderado · ver metodología abajo</span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Comparativo de indicadores</span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Indicador</th>
+            <th class="num">Kevin D. Maldonado</th>
+            <th class="num">Israel de J. Pérez</th>
+          </tr>
+        </thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Reportes por turno (noche operativa)</span>
+      <span class="section-note">Turno ≈ 22:00 → 06:00</span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Noche (inicio)</th>
+            <th>Monitorista titular</th>
+            <th class="num">Regs. del turno</th>
+            <th class="num">Supervisiones</th>
+            <th>1ª supervisión</th>
+            <th>Última supervisión</th>
+            <th>Cierre</th>
+            <th class="num">Sin relevancia</th>
+          </tr>
+        </thead>
+        <tbody id="nightBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Cadencia temporal de supervisiones</span>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Monitorista</th>
+            <th class="num">Intervalo medio</th>
+            <th class="num">Mediana</th>
+            <th class="num">Mínimo</th>
+            <th class="num">Máximo</th>
+            <th>Interpretación</th>
+          </tr>
+        </thead>
+        <tbody id="gapBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="section-num">05</span>
+      <span class="section-title">Metodología del porcentaje de desempeño</span>
+    </div>
+    <div class="note-box">
+      <ul style="margin:0; padding-left:18px;">
+        <li><b>Calidad (30%)</b> — % de registros con estatus REPORTADO COMPLETO (penaliza uso masivo de SIN RELEVANCIA).</li>
+        <li><b>Volumen (25%)</b> — promedio de supervisiones virtuales por turno de cierre, normalizado a meta de 9 llamadas/noche.</li>
+        <li><b>Cierre (20%)</b> — % de cierres de turno entregados a más tardar 06:03 hrs.</li>
+        <li><b>Ritmo (15%)</b> — % de intervalos entre supervisiones del mismo turno que caen entre 20 y 60 minutos (cadencia estable).</li>
+        <li><b>Incidencias (10%)</b> — documentar hechos reales (p. ej. código plata) eleva el componente; base 40 pts.</li>
+        <li>El archivo solo cubre OOAD MONITOREO; no mide cierres matutinos/vespertinos de estados.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <span>Fuente: TABLA MONITOREO.xlsx · 01–10/09/2026</span>
+  <span>Evaluación de desempeño · Centro de Enlace</span>
+</footer>
+
+<script>
+const DASH = {"monitors": {"KEVIN DANIEL MALDONADO": {"nombre": "KEVIN DANIEL MALDONADO", "total": 56, "completo": 35, "sinrel": 21, "pct_completo": 62.5, "supervisiones": 47, "cierres": 5, "inicios": 4, "codigos_plata": 0, "noches": 6, "noches_lista": ["2026-08-31", "2026-09-03", "2026-09-04", "2026-09-05", "2026-09-06", "2026-09-09"], "per_night": [{"noche": "2026-08-31", "total": 7, "sup": 6, "sinrel": 0, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-03", "total": 12, "sup": 10, "sinrel": 0, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-04", "total": 1, "sup": 1, "sinrel": 0, "cierre": false, "cierre_hora": "—"}, {"noche": "2026-09-05", "total": 12, "sup": 10, "sinrel": 11, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-06", "total": 12, "sup": 10, "sinrel": 10, "cierre": true, "cierre_hora": "06:03"}, {"noche": "2026-09-09", "total": 12, "sup": 10, "sinrel": 0, "cierre": true, "cierre_hora": "06:00"}], "avg_sup_por_turno": 9.2, "gap_mean": 38.0, "gap_median": 37.0, "gap_min": 9, "gap_max": 78, "cierre_horas": ["06:00", "06:00", "06:00", "06:03", "06:00"], "inicio_horas": ["22:00", "22:00", "22:00", "22:00"], "scores": {"calidad": 62.5, "volumen": 100, "cierre": 100.0, "ritmo": 78.0, "incidencias": 40, "overall": 79.5}}, "ISRAEL DE JESUS PEREZ": {"nombre": "ISRAEL DE JESUS PEREZ", "total": 49, "completo": 44, "sinrel": 5, "pct_completo": 89.8, "supervisiones": 37, "cierres": 5, "inicios": 4, "codigos_plata": 3, "noches": 5, "noches_lista": ["2026-09-01", "2026-09-02", "2026-09-04", "2026-09-07", "2026-09-08"], "per_night": [{"noche": "2026-09-01", "total": 8, "sup": 6, "sinrel": 0, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-02", "total": 6, "sup": 4, "sinrel": 5, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-04", "total": 13, "sup": 10, "sinrel": 0, "cierre": true, "cierre_hora": "06:00"}, {"noche": "2026-09-07", "total": 10, "sup": 9, "sinrel": 0, "cierre": true, "cierre_hora": "06:03"}, {"noche": "2026-09-08", "total": 12, "sup": 8, "sinrel": 0, "cierre": true, "cierre_hora": "06:03"}], "avg_sup_por_turno": 7.4, "gap_mean": 36.0, "gap_median": 33.0, "gap_min": 5, "gap_max": 137, "cierre_horas": ["06:00", "06:00", "06:00", "06:03", "06:03"], "inicio_horas": ["22:01", "22:00", "22:00", "22:00"], "scores": {"calidad": 89.8, "volumen": 82.2, "cierre": 100.0, "ritmo": 68.8, "incidencias": 100, "overall": 87.8}}}, "nights": [{"noche": "2026-08-31", "noche_lbl": "31/08", "primary": "KEVIN DANIEL MALDONADO", "total": 7, "sup": 6, "sinrel": 0, "cierre_hora": "06:00", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "02:19", "ultima_sup": "05:30"}, {"noche": "2026-09-01", "noche_lbl": "01/09", "primary": "ISRAEL DE JESUS PEREZ", "total": 8, "sup": 6, "sinrel": 0, "cierre_hora": "06:00", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:19", "ultima_sup": "23:50"}, {"noche": "2026-09-02", "noche_lbl": "02/09", "primary": "ISRAEL DE JESUS PEREZ", "total": 6, "sup": 4, "sinrel": 5, "cierre_hora": "06:00", "cierre_est": "SIN RELEVANCIA", "primera_sup": "00:10", "ultima_sup": "02:51"}, {"noche": "2026-09-03", "noche_lbl": "03/09", "primary": "KEVIN DANIEL MALDONADO", "total": 12, "sup": 10, "sinrel": 0, "cierre_hora": "06:00", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:48", "ultima_sup": "23:30"}, {"noche": "2026-09-04", "noche_lbl": "04/09", "primary": "ISRAEL DE JESUS PEREZ", "total": 13, "sup": 10, "sinrel": 0, "cierre_hora": "06:00", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:12", "ultima_sup": "04:43"}, {"noche": "2026-09-05", "noche_lbl": "05/09", "primary": "KEVIN DANIEL MALDONADO", "total": 12, "sup": 10, "sinrel": 11, "cierre_hora": "06:00", "cierre_est": "SIN RELEVANCIA", "primera_sup": "00:20", "ultima_sup": "23:43"}, {"noche": "2026-09-06", "noche_lbl": "06/09", "primary": "KEVIN DANIEL MALDONADO", "total": 12, "sup": 10, "sinrel": 10, "cierre_hora": "06:03", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:16", "ultima_sup": "23:45"}, {"noche": "2026-09-07", "noche_lbl": "07/09", "primary": "ISRAEL DE JESUS PEREZ", "total": 10, "sup": 9, "sinrel": 0, "cierre_hora": "06:03", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:18", "ultima_sup": "23:59"}, {"noche": "2026-09-08", "noche_lbl": "08/09", "primary": "ISRAEL DE JESUS PEREZ", "total": 12, "sup": 8, "sinrel": 0, "cierre_hora": "06:03", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:16", "ultima_sup": "23:53"}, {"noche": "2026-09-09", "noche_lbl": "09/09", "primary": "KEVIN DANIEL MALDONADO", "total": 12, "sup": 10, "sinrel": 0, "cierre_hora": "06:00", "cierre_est": "REPORTADO COMPLETO", "primera_sup": "00:10", "ultima_sup": "23:38"}]};
+</script>
+<script>
+const K = DASH.monitors['KEVIN DANIEL MALDONADO'];
+const I = DASH.monitors['ISRAEL DE JESUS PEREZ'];
+
+function scoreClass(v){ return v >= 85 ? 'good' : (v >= 70 ? 'mid' : 'good'); }
+
+function card(m, shortName){
+  const s = m.scores;
+  const bars = [
+    ['Calidad de estatus', s.calidad],
+    ['Volumen por turno', s.volumen],
+    ['Puntualidad de cierre', s.cierre],
+    ['Ritmo de supervisiones', s.ritmo],
+    ['Documentación de incidencias', s.incidencias],
+  ];
+  return `<div class="card">
+    <div class="name">${shortName}</div>
+    <div class="role">Monitorista nocturno · ${m.noches} noches con actividad</div>
+    <div class="score-big ${scoreClass(s.overall)}">${s.overall.toFixed(1)}%</div>
+    <div class="score-label">Índice global de desempeño</div>
+    <div class="metrics">
+      <div class="metric"><div class="k">Reportes totales</div><div class="v">${m.total}</div></div>
+      <div class="metric"><div class="k">Supervisiones</div><div class="v">${m.supervisiones}</div></div>
+      <div class="metric"><div class="k">Prom. sup./turno</div><div class="v">${m.avg_sup_por_turno}</div></div>
+      <div class="metric"><div class="k">Cierres entregados</div><div class="v">${m.cierres}</div></div>
+      <div class="metric"><div class="k">% completo</div><div class="v">${m.pct_completo}%</div></div>
+      <div class="metric"><div class="k">Cód. plata doc.</div><div class="v">${m.codigos_plata}</div></div>
+    </div>
+    <div class="bars">
+      ${bars.map(([lab,val]) => `
+        <div class="bar-row">
+          <div class="bar-lab"><span>${lab}</span><span>${val.toFixed(0)}%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,val)}%"></div></div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+document.getElementById('cards').innerHTML =
+  card(K, 'Kevin Daniel Maldonado') + card(I, 'Israel de Jesús Pérez');
+
+const rows = [
+  ['Registros totales', K.total, I.total],
+  ['Supervisiones virtuales', K.supervisiones, I.supervisiones],
+  ['Inicios de turno (~22:00)', K.inicios, I.inicios],
+  ['Cierres de turno (~06:00)', K.cierres, I.cierres],
+  ['Promedio supervisiones / turno', K.avg_sup_por_turno, I.avg_sup_por_turno],
+  ['% REPORTADO COMPLETO', K.pct_completo + '%', I.pct_completo + '%'],
+  ['Registros SIN RELEVANCIA', K.sinrel, I.sinrel],
+  ['Códigos plata documentados', K.codigos_plata, I.codigos_plata],
+  ['Intervalo medio entre supervisiones', (K.gap_mean||'—') + ' min', (I.gap_mean||'—') + ' min'],
+  ['Mediana de intervalo', (K.gap_median||'—') + ' min', (I.gap_median||'—') + ' min'],
+  ['Índice de desempeño', K.scores.overall.toFixed(1) + '%', I.scores.overall.toFixed(1) + '%'],
+];
+document.getElementById('cmpBody').innerHTML = rows.map(([lab,a,b]) => `<tr>
+  <td>${lab}</td><td class="num">${a}</td><td class="num">${b}</td>
+</tr>`).join('');
+
+document.getElementById('nightBody').innerHTML = DASH.nights.map(n => {
+  const short = n.primary.includes('KEVIN') ? 'Kevin Maldonado' : 'Israel Pérez';
+  const badge = n.sinrel >= 5
+    ? '<span class="badge warn">Alta SR</span>'
+    : '<span class="badge ok">OK</span>';
+  return `<tr>
+    <td style="font-family:var(--mono)">${n.noche_lbl}</td>
+    <td>${short}</td>
+    <td class="num">${n.total}</td>
+    <td class="num">${n.sup}</td>
+    <td class="num">${n.primera_sup}</td>
+    <td class="num">${n.ultima_sup}</td>
+    <td class="num">${n.cierre_hora}</td>
+    <td class="num">${n.sinrel} ${badge}</td>
+  </tr>`;
+}).join('');
+
+document.getElementById('gapBody').innerHTML = [
+  ['Kevin D. Maldonado', K, 'Cadencia estable (~37 min); ritmo de 1 llamada cada media hora aprox.'],
+  ['Israel de J. Pérez', I, 'Cadencia similar (~33 min mediana); un hueco máximo de 137 min en algún turno.'],
+].map(([name, m, interp]) => `<tr>
+  <td>${name}</td>
+  <td class="num">${m.gap_mean} min</td>
+  <td class="num">${m.gap_median} min</td>
+  <td class="num">${m.gap_min} min</td>
+  <td class="num">${m.gap_max} min</td>
+  <td class="muted">${interp}</td>
+</tr>`).join('');
+</script>
+</body>
+</html>
